@@ -1,5 +1,5 @@
 <?php
-// routes/web.php - Define all routes
+// Define all application routes
 
 // Home
 $router->get('/', 'HomeController', 'index');

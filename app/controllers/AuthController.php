@@ -1,22 +1,16 @@
 <?php
-// app/controllers/AuthController.php - Handles authentication
-
 class AuthController extends Controller {
     private $userModel;
     
-    // Why constructor? Initialize model
     public function __construct() {
         session_start();
         $this->userModel = new User();
     }
     
-    // Show registration page
     public function showRegister() {
-        // Why separate method? Clean separation of concerns
-        $this->view('auth/register');
+        $this->view('auth/register', ['title' => 'Register']);
     }
     
-    // Handle registration form submission
     public function register() {
         if (!$this->isPost()) {
             $this->showRegister();
@@ -27,7 +21,6 @@ class AuthController extends Controller {
         $password = $this->input('password');
         $confirmPassword = $this->input('confirm_password');
         
-        // Validation
         $errors = [];
         
         if (empty($username) || empty($password) || empty($confirmPassword)) {
@@ -50,31 +43,36 @@ class AuthController extends Controller {
             $errors[] = "Username already exists!";
         }
         
-        // If validation fails, show form with errors
         if (!empty($errors)) {
-            $this->view('auth/register', ['errors' => $errors, 'username' => $username]);
+            $this->view('auth/register', [
+                'title' => 'Register',
+                'errors' => $errors,
+                'username' => $username
+            ]);
             return;
         }
         
-        // Create user
         if ($this->userModel->create($username, $password)) {
-            $this->view('auth/register', ['success' => "Registration successful! You can now login."]);
+            $this->view('auth/register', [
+                'title' => 'Register',
+                'success' => "✅ Registration successful! You can now login."
+            ]);
         } else {
-            $this->view('auth/register', ['errors' => ["Registration failed. Please try again."]]);
+            $this->view('auth/register', [
+                'title' => 'Register',
+                'errors' => ["Registration failed. Please try again."]
+            ]);
         }
     }
     
-    // Show login page
     public function showLogin() {
-        // If already logged in, redirect to dashboard
         if (isset($_SESSION['user_id'])) {
             $this->redirect('/dashboard');
         }
         
-        $this->view('auth/login');
+        $this->view('auth/login', ['title' => 'Login']);
     }
     
-    // Handle login form submission
     public function login() {
         if (!$this->isPost()) {
             $this->showLogin();
@@ -84,27 +82,29 @@ class AuthController extends Controller {
         $username = $this->input('username');
         $password = $this->input('password');
         
-        // Validation
         if (empty($username) || empty($password)) {
-            $this->view('auth/login', ['error' => "All fields are required!"]);
+            $this->view('auth/login', [
+                'title' => 'Login',
+                'error' => "All fields are required!"
+            ]);
             return;
         }
         
-        // Verify credentials
         $user = $this->userModel->verifyLogin($username, $password);
         
         if ($user) {
-            // Login successful
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             
             $this->redirect('/dashboard');
         } else {
-            $this->view('auth/login', ['error' => "Invalid username or password!"]);
+            $this->view('auth/login', [
+                'title' => 'Login',
+                'error' => "❌ Invalid username or password!"
+            ]);
         }
     }
     
-    // Logout
     public function logout() {
         $_SESSION = array();
         session_destroy();

@@ -1,11 +1,5 @@
 <?php
-// public/index.php - Application entry point
-// ALL requests go through this file
-
-// Why? Security - only public/ folder is web-accessible
-
-// Start session
-session_start();
+// Entry point - all requests go through here
 
 // Load core files
 require_once __DIR__ . '/../core/Database.php';
@@ -16,6 +10,7 @@ require_once __DIR__ . '/../core/Router.php';
 require_once __DIR__ . '/../app/models/User.php';
 
 // Load controllers
+require_once __DIR__ . '/../app/controllers/HomeController.php';
 require_once __DIR__ . '/../app/controllers/AuthController.php';
 require_once __DIR__ . '/../app/controllers/DashboardController.php';
 

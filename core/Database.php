@@ -1,16 +1,13 @@
 <?php
-// core/Database.php - Database connection class
-
 class Database {
     private static $pdo = null;
-    
-    // Why static? So we only create ONE database connection
-    // Instead of new connection every time
     
     public static function connect() {
         if (self::$pdo === null) {
             try {
-                self::$pdo = new PDO('sqlite:' . __DIR__ . '/../database.db');
+                // Database will be created in mvc-version folder
+                $dbPath = __DIR__ . '/../database.db';
+                self::$pdo = new PDO('sqlite:' . $dbPath);
                 self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 self::$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
                 
